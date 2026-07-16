@@ -27,7 +27,7 @@
     <!-- 2. عدد الطلبات (في المنتصف) -->
     <div class="text-center">
         <p class="text-xs text-red-400">عدد الطلبات</p>
-        <span id="orderCount" class="text-4xl font-bold">87</span>
+        <span id="orderCount" class="text-4xl font-bold">0</span>
     </div>
 
     <!-- 3. مربع الهدف (على اليسار) -->
@@ -207,25 +207,19 @@
 
         window.open(`https://wa.me/${whatsappNumber}?text=${message}`, '_blank');
     }
-    // 1. عند فتح الصفحة، نجلب الرقم القديم من ذاكرة المتصفح (عشان العداد ميرجعش صفر)
-document.addEventListener('DOMContentLoaded', () => {
-    const savedCount = localStorage.getItem('orderCount');
-    if (savedCount) {
-        document.getElementById('orderCount').innerText = savedCount;
-    }
+   
 });
-
-// 2. دالة تحديث العداد
+// 2. دالة تحديث العداد (معدلة لتكون مؤقتة فقط)
 function updateCounter() {
     const counterElement = document.getElementById('orderCount');
     let currentCount = parseInt(counterElement.innerText);
     let newCount = currentCount + 1;
     
-    // تحديث الشاشة
+    // تحديث الشاشة فقط ليراها العميل لحظياً
     counterElement.innerText = newCount;
     
-    // حفظ الرقم الجديد في ذاكرة المتصفح
-    localStorage.setItem('orderCount', newCount);
+    // تم حذف سطر localStorage.setItem حتى لا يتم حفظ الرقم القديم في هاتف العميل
+}
 }
 
 // 3. دالة إرسال الواتساب (المربوطة بزر الطلب)
