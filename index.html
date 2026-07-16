@@ -203,6 +203,51 @@
 
         window.open(`https://wa.me/${whatsappNumber}?text=${message}`, '_blank');
     }
+    // 1. عند فتح الصفحة، نجلب الرقم القديم من ذاكرة المتصفح (عشان العداد ميرجعش صفر)
+document.addEventListener('DOMContentLoaded', () => {
+    const savedCount = localStorage.getItem('orderCount');
+    if (savedCount) {
+        document.getElementById('orderCount').innerText = savedCount;
+    }
+});
+
+// 2. دالة تحديث العداد
+function updateCounter() {
+    const counterElement = document.getElementById('orderCount');
+    let currentCount = parseInt(counterElement.innerText);
+    let newCount = currentCount + 1;
+    
+    // تحديث الشاشة
+    counterElement.innerText = newCount;
+    
+    // حفظ الرقم الجديد في ذاكرة المتصفح
+    localStorage.setItem('orderCount', newCount);
+}
+
+// 3. دالة إرسال الواتساب (المربوطة بزر الطلب)
+function sendToWhatsApp() {
+    const name = document.getElementById('userName').value;
+    const phone = document.getElementById('userPhone').value;
+    const address = document.getElementById('userAddress').value;
+    const qty = document.getElementById('quantity').innerText;
+    
+    // تأكد من وجود متغير selectedProduct أو استبدله باسم المنتج مباشرة
+    const product = typeof selectedProduct !== 'undefined' ? selectedProduct : "منتج غير محدد";
+
+    if (!name || !phone || !address) {
+        alert("يرجى ملء البيانات أولاً");
+        return;
+    }
+
+    // هنا نقوم بزيادة العداد
+    updateCounter();
+
+    // إرسال الرسالة
+    const whatsappNumber = "201063510107";
+    const message = `طلب جديد:%0Aالمنتج: ${product}%0Aالاسم: ${name}%0Aالهاتف: ${phone}%0Aالعنوان: ${address}%0Aالكمية: ${qty}`;
+
+    window.open(`https://wa.me/${whatsappNumber}?text=${message}`, '_blank');
+}
 </script>
 </body>
 </html>
