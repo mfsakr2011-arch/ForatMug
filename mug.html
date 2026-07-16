@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MUG PRINT - ماج مطبوع</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Cairo', sans-serif; background-color: #f8fafc; }
+    </style>
+</head>
+<body class="text-gray-800">
+
+<header class="bg-[#0b1329] text-white py-3 px-6 md:px-12 flex justify-between items-center shadow-md">
+    
+    <!-- 1. اللوجو (على اليمين) -->
+    <div class="flex items-center space-x-3 space-x-reverse">
+        <i class="fa-solid fa-mug-hot text-2xl"></i>
+        <div class="leading-tight">
+            <span class="font-extrabold text-lg block tracking-wider">Forat MUG</span>
+            <span class="text-xs text-gray-300 font-light tracking-widest block -mt-1">PRINT</span>
+        </div>
+    </div>
+
+    <!-- 2. عدد الطلبات (في المنتصف) -->
+    <div class="text-center">
+        <p class="text-xs text-red-400">عدد الطلبات</p>
+        <span id="orderCount" class="text-4xl font-bold">0</span>
+    </div>
+
+    <!-- 3. مربع الهدف (على اليسار) -->
+    <div class="flex items-center space-x-3 space-x-reverse bg-[#17233d] px-4 py-2 rounded-lg border border-gray-700">
+        <div class="text-right leading-tight">
+            <span class="text-[10px] text-gray-400 block">الهدف</span>
+            <span class="font-bold text-l">50000</span>
+        </div>
+        <i class="fa-solid fa-bag-shopping text-gray-400 text-lg"></i>
+    </div>
+
+</header>
+    <main class="max-w-6xl mx-auto px-4 py-8">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+            <div class="lg:col-span-6 bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+                <div class="bg-gray-50 rounded-xl overflow-hidden mb-4 border border-gray-100 flex items-center justify-center">
+                    <img id="main-image" src="https://g.top4top.io/p_3844k9fjb1.jpg" alt="ماج مطبوع" class="w-full h-90 md:h-70 object-cover transition-all duration-300">
+                </div>
+            </div>
+
+            <div class="lg:col-span-6 bg-white p-6 md:p-8 rounded-2xl shadow-sm border border-gray-100">
+                <div class="flex gap-4 mb-6">
+                    <button onclick="changeProduct('zamalek')" id="btnZamalek" class="flex-1 py-3 bg-white border-2 border-gray-200 rounded-xl font-bold transition">ماج الزمالك</button>
+                    <button onclick="changeProduct('alahly')" id="btnAlahly" class="flex-1 py-3 bg-white border-2 border-gray-200 rounded-xl font-bold transition">ماج الأهلي</button>
+                </div>
+
+                <div id="successMessage" class="hidden text-center py-10">
+                    <h2 class="text-2xl font-bold">شكراً لدعمك لفرات!</h2>
+                </div>
+
+                <form id="orderForm" onsubmit="submitOrder(event)" class="space-y-4">
+                    <div>
+                        <label class="block text-xs font-bold text-gray-700 mb-2">اختر العدد</label>
+                        <div class="flex items-center justify-between border border-gray-200 rounded-lg p-1 bg-gray-50/50">
+                            <button type="button" onclick="updateQuantity(1)" class="w-10 h-9 flex items-center justify-center bg-gray-100 text-gray-600 rounded hover:bg-gray-200 font-bold text-lg">+</button>
+                            <span id="quantity" class="font-bold text-sm">1</span>
+                            <button type="button" onclick="updateQuantity(-1)" class="w-10 h-9 flex items-center justify-center bg-gray-100 text-gray-600 rounded hover:bg-gray-200 font-bold text-lg">-</button>
+                        </div>
+                    </div>
+
+                    <input type="text" id="userName" required placeholder="اكتب اسمك الكامل" class="w-full pl-4 pr-10 py-2.5 bg-gray-50/50 border border-gray-200 rounded-lg text-sm text-right">
+                    <input type="text" id="userAddress" required placeholder="اكتب عنوانك بالتفصيل" class="w-full pl-4 pr-10 py-2.5 bg-gray-50/50 border border-gray-200 rounded-lg text-sm text-right">
+                    <input type="tel" id="userPhone" required minlength="11" maxlength="11" pattern="[0-9]{11}" placeholder="01XXXXXXXXX" class="w-full pl-4 pr-10 py-2.5 bg-gray-50/50 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-gray-400 text-right">
+<div class="pt-2">
+    <label class="block text-xs font-bold text-gray-700 mb-2">طريقة الدفع</label>
+
+    <!-- 1. الدفع عند الاستلام -->
+    <label class="flex items-center justify-between p-3.5 border-2 border-gray-900 bg-gray-50/80 rounded-xl mb-3 cursor-pointer">
+        <div class="flex items-center space-x-3 space-x-reverse">
+            <input type="radio" name="payment" value="cash" checked class="w-4 h-4">
+            <div>
+                <span class="font-bold text-xs block text-gray-900">الدفع عند الاستلام</span>
+                <span class="text-[10px] text-gray-400 block">ادفع عند استلام الطلب</span>
+            </div>
+        </div>
+        <i class="fa-solid fa-money-bill-transfer text-gray-700 text-lg"></i>
+    </label>
+<!-- خيار الدفع عبر فودافون كاش -->
+<a href="tel:*9*7*01063510107*140#" class="flex items-center justify-between p-3.5 border border-gray-200 rounded-xl mb-3 cursor-pointer hover:border-gray-300 hover:bg-gray-50 transition">
+    <div class="flex items-center space-x-3 space-x-reverse">
+        <div class="w-4 h-4 rounded-full border border-gray-400"></div>
+        <div>
+            <span class="font-bold text-xs block text-gray-900">فودافون كاش</span>
+            <span class="text-[10px] text-gray-400 block">اضغط للتحويل المباشر (140 جنيه)</span>
+        </div>
+    </div>
+    <i class="fa-solid fa-wallet text-red-600 text-lg"></i>
+</a>
+
+    <!-- 3. البطاقة البنكية -->
+    <label class="flex items-center justify-between p-3.5 border border-gray-200 rounded-xl cursor-pointer hover:border-gray-300">
+        <div class="flex items-center space-x-3 space-x-reverse">
+            <input type="radio" name="payment" value="credit_card" class="w-4 h-4">
+            <div>
+                <span class="font-bold text-xs block text-gray-900">بطاقة بنكية</span>
+                <span class="text-[10px] text-gray-400 block">ادفع باستخدام البطاقة البنكية</span>
+            </div>
+        </div>
+        <i class="fa-solid fa-credit-card text-gray-700 text-lg"></i>
+    </label>
+</div>
+
+<!-- زر الواتساب (تحته مباشرة وبشكل مستقل) -->
+<div class="w-full md:w-2/3 mx-auto mt-3">
+    <button type="button" onclick="sendToWhatsApp()" class="w-full bg-green-600 text-white py-2.5 rounded-xl font-bold text-sm hover:bg-green-700 transition flex items-center justify-center shadow-md">
+        <i class="fa-brands fa-whatsapp text-lg ml-2"></i>
+        <span>الطلب عبر الواتساب</span>
+    </button>
+</div>
+    <script>
+    let selectedProduct = 'zamalek';
+    let qty = 1;
+
+    // وظيفة تغيير المنتج
+    function changeProduct(type) {
+        selectedProduct = type;
+        const mainImage = document.getElementById('main-image');
+        mainImage.src = (type === 'zamalek') ? "https://g.top4top.io/p_3844k9fjb1.jpg" : "https://j.top4top.io/p_3844afmbx1.jpg";
+        
+        const btnZamalek = document.getElementById('btnZamalek');
+        const btnAlahly = document.getElementById('btnAlahly');
+        
+        if (type === 'zamalek') {
+            btnZamalek.classList.add('border-black');
+            btnAlahly.classList.remove('border-black');
+        } else {
+            btnAlahly.classList.add('border-black');
+            btnZamalek.classList.remove('border-black');
+        }
+    }
+
+    // وظيفة تغيير الكمية
+    function updateQuantity(val) {
+        qty = Math.max(1, qty + val);
+        document.getElementById('quantity').innerText = qty;
+    }
+
+    // وظيفة إرسال الطلب للسيرفر (للطباعة)
+    async function submitOrder(event) {
+        event.preventDefault();
+        const paymentRadio = document.querySelector('input[name="payment"]:checked');
+        const paymentMethod = paymentRadio ? paymentRadio.value : 'cash';
+        
+        const orderData = {
+            name: document.getElementById('userName').value,
+            address: document.getElementById('userAddress').value,
+            phone: document.getElementById('userPhone').value,
+            qty: document.getElementById('quantity').innerText,
+            productType: selectedProduct,
+            payment: paymentMethod
+        };
+
+        try {
+            const response = await fetch('https://yard-frenzied-waged.ngrok-free.dev/print', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(orderData)
+            });
+
+            if (response.ok) {
+                alert("تم إرسال الطلب للطباعة بنجاح!");
+                document.getElementById('orderForm').classList.add('hidden');
+                document.getElementById('successMessage').classList.remove('hidden');
+            } else {
+                alert("حدث خطأ في الاتصال بالسيرفر.");
+            }
+        } catch (error) {
+            alert("خطأ في الاتصال، تأكد من تشغيل السيرفر.");
+        }
+    }
+
+    // وظيفة إرسال الطلب للواتساب
+    function sendToWhatsApp() {
+        const name = document.getElementById('userName').value;
+        const phone = document.getElementById('userPhone').value;
+        const address = document.getElementById('userAddress').value;
+        const qtyValue = document.getElementById('quantity').innerText;
+        const productType = selectedProduct;
+
+        if (!name || !phone || !address) {
+            alert("يرجى التأكد من ملء البيانات أولاً");
+            return;
+        }
+
+        const whatsappNumber = "201063510107"; 
+        
+        const message = `طلب جديد عبر الموقع:%0A` +
+                        `المنتج: ${productType}%0A` +
+                        `الاسم: ${name}%0A` +
+                        `الهاتف: ${phone}%0A` +
+                        `العنوان: ${address}%0A` +
+                        `الكمية: ${qtyValue}`;
+
+        window.open(`https://wa.me/${whatsappNumber}?text=${message}`, '_blank');
+    }
+</script>
+</body>
+</html>
