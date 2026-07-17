@@ -121,7 +121,7 @@
         <span>الطلب عبر الواتساب</span>
     </button>
 </div>
-   <script>
+  <script>
     let selectedProduct = 'zamalek';
     let qty = 1;
 
@@ -158,29 +158,40 @@
         }
     }
 
-    // دالة إرسال الطلب للواتساب
+    // دالة إرسال الطلب للواتساب وللشيت
     function sendToWhatsApp() {
-        const name = document.getElementById('userName').value;
-        const phone = document.getElementById('userPhone').value;
-        const address = document.getElementById('userAddress').value;
-        const qtyValue = document.getElementById('quantity').innerText;
-        const productType = selectedProduct;
+        const orderData = {
+            name: document.getElementById('userName').value,
+            phone: document.getElementById('userPhone').value,
+            address: document.getElementById('userAddress').value,
+            qty: document.getElementById('quantity').innerText,
+            productType: selectedProduct
+        };
 
-        if (!name || !phone || !address) {
+        if (!orderData.name || !orderData.phone || !orderData.address) {
             alert("يرجى التأكد من ملء البيانات أولاً");
             return;
         }
 
-        // زيادة العداد
+      // 1. إرسال البيانات لجدول بيانات جوجل
+fetch("https://script.google.com/macros/s/AKfycbwKHeCPv24MH5VCEgn4hBkY_qCjTkORTVT8xg_CCFFnjb8E-4nwVRbCcFlxWQX65__H/exec", {
+    method: "POST",
+    mode: "no-cors",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(orderData)
+});
+
+        // 2. زيادة العداد
         updateCounter();
 
+        // 3. فتح الواتساب
         const whatsappNumber = "201063510107"; 
         const message = `طلب جديد عبر الموقع:%0A` +
-                        `المنتج: ${productType}%0A` +
-                        `الاسم: ${name}%0A` +
-                        `الهاتف: ${phone}%0A` +
-                        `العنوان: ${address}%0A` +
-                        `الكمية: ${qtyValue}`;
+                        `المنتج: ${orderData.productType}%0A` +
+                        `الاسم: ${orderData.name}%0A` +
+                        `الهاتف: ${orderData.phone}%0A` +
+                        `العنوان: ${orderData.address}%0A` +
+                        `الكمية: ${orderData.qty}`;
 
         window.open(`https://wa.me/${whatsappNumber}?text=${message}`, '_blank');
     }
